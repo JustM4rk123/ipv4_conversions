@@ -82,6 +82,24 @@ ruff format
 ruff check .
 ```
 
+## Project structure
+
+```
+ipv4_conversions/
+├── .gitignore
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── src/
+│   └── ipv4_conversions/
+│       ├── __init__.py
+│       ├── cli.py
+│       └── core.py
+└── tests/
+    ├── test_conversions.py
+    └── test_invalid.py
+```
+
 ## License
 
 Released under the MIT License. See [LICENSE](LICENSE).
