@@ -1,10 +1,12 @@
 import sys
 
 import pytest
+import questionary
 
 from ipv4_conversions.cli import main
 
 
+# command-line prompts with flags
 def test_verbose_result(monkeypatch, capsys):
     monkeypatch.setattr(
         sys,
@@ -135,6 +137,8 @@ def test_multiple_addresses_short_output(monkeypatch, capsys):
         ),
     ],
 )
+
+# invalid prompts
 def test_invalid_address_exits_with_argument_error(
     monkeypatch, capsys, option, address, expected_error
 ):
@@ -189,3 +193,61 @@ def test_rejects_both_conversion_options(
 
     assert exc_info.value.code == 2
     assert "not allowed with argument" in capsys.readouterr().err
+
+
+# interactive menu
+class FakeQuestion:
+    def __init__(self, answer):
+        self.answer = answer
+
+    def ask(self, *args, **kwargs):
+        return self.answer
+
+
+def test_interactive_menu_to_binary(monkeypatch, capsys):
+    calls = []
+    answers = iter(["192.168.1.256", "192.168.0.1"])
+
+    def fake_input(prompt=""):
+        calls.append(prompt)
+        return next(answers)
+
+    monkeypatch.setattr("builtins.input", fake_input)
+    monkeypatch.setattr(
+        questionary,
+        "select",
+        lambda *a, **kw: FakeQuestion("Dotted decimal to binary address"),
+    )
+    monkeypatch.setattr(sys, "argv", ["ipv4-conversions"])
+
+    assert main() == 0
+
+    out = capsys.readouterr().out
+    assert "outside the range 0-255" in out
+    assert "11000000.10101000.00000000.00000001" in out
+    assert len(calls) == 2
+
+
+def test_interactive_menu_to_decimal(monkeypatch, capsys):
+    calls = []
+    answers = iter(
+        ["11000000.10101000.00000001.111111111", "11000000.10101000.00000000.00000001"]
+    )
+
+    def fake_input(prompt=""):
+        calls.append(prompt)
+        return next(answers)
+
+    monkeypatch.setattr("builtins.input", fake_input)
+    monkeypatch.setattr(
+        questionary,
+        "select",
+        lambda *a, **kw: FakeQuestion("Binary address to dotted decimal"),
+    )
+    monkeypatch.setattr(sys, "argv", ["ipv4-conversions"])
+
+    assert main() == 0
+
+    out = capsys.readouterr().out
+    assert "exactly 8 bits" in out
+    assert "192.168.0.1" in out
