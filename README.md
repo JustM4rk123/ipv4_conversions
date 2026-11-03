@@ -83,7 +83,7 @@ pip install -e ".[dev]"
 
 ### Test suite
 
-The pytest suite covers valid conversions in both directions, round-trip conversions, and invalid IPv4 and binary input. Run it from the project root with:
+The pytest suite covers valid conversions in both directions, round-trip conversions, and invalid IPv4 and binary input; aswell as CLI prompts (via flags or interactive menu), and invalid flag usage. Run it from the project root with:
 
 ```bash
 python3 -m pytest

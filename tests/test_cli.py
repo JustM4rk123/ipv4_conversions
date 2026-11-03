@@ -251,3 +251,11 @@ def test_interactive_menu_to_decimal(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert "exactly 8 bits" in out
     assert "192.168.0.1" in out
+
+
+def test_interactive_menu_exit(monkeypatch):
+    monkeypatch.setattr(questionary, "select", lambda *a, **kw: FakeQuestion("Exit"))
+    monkeypatch.setattr(sys, "argv", ["ipv4-conversions"])
+
+    with pytest.raises(SystemExit, match="Program terminated"):
+        main()
