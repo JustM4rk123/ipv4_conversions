@@ -6,7 +6,7 @@ import questionary
 from .core import binary_to_ipv4, ipv4_to_binary
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(prog="ipv4-conversions")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
@@ -37,10 +37,10 @@ def main():
                 result = binary_to_ipv4(ip)
             except ValueError as e:
                 parser.error(str(e))
-                if not args.short:
-                    print(f"The dotted-decimal equivalent of {ip} is: {result}")
-                else:
-                    print(result)
+            if not args.short:
+                print(f"The dotted-decimal equivalent of {ip} is: {result}")
+            else:
+                print(result)
     elif args.to_binary is not None:
         for ip in args.to_binary:
             try:
@@ -48,7 +48,7 @@ def main():
             except ValueError as e:
                 parser.error(str(e))
             if not args.short:
-                print(f"The dotted-decimal equivalent of {ip} is: {result}")
+                print(f"The binary equivalent of {ip} is: {result}")
             else:
                 print(result)
     else:
@@ -90,6 +90,7 @@ def main():
                         break
             case "Exit":
                 sys.exit("Program terminated")
+    return 0
 
 
 if __name__ == "__main__":
