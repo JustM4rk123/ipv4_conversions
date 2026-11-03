@@ -75,11 +75,18 @@ Choose **Binary address to dotted decimal** or **Dotted decimal to binary addres
 
 ## Development
 
+You can install development tools, such as pytest and ruff, using this command: 
+
 ```bash
 pip install -e ".[dev]"
+```
+
+### Test suite
+
+The pytest suite covers valid conversions in both directions, round-trip conversions, and invalid IPv4 and binary input. Run it from the project root with:
+
+```bash
 python3 -m pytest
-ruff format
-ruff check .
 ```
 
 ## Project structure
